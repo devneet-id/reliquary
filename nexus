@@ -446,7 +446,7 @@ Chanter::cast(
 
     $count = ['ok'=> 0, 'fail'=> 0];
     foreach ($relics as $relic_name => $relic) {
-      Whisper::echo("{{COLOR-INFO}}♦{{COLOR-END}} {{bold}}$relic_name{{end}} · " . ($relic['runite'] ?? 'cast') . '.rune' . "{{nl}}");
+      Whisper::echo("{{COLOR-INFO}}♦{{COLOR-END}} {{bold}}$relic_name{{end}} · " . (explode('/', $relic_name)[2] ?? $relic['runite'] ?? 'cast') . '.rune' . (count(explode('/', $relic_name)) !== 3 ? ' {{COLOR-WARNING}}(older key){{COLOR-END}}' : '') . "{{nl}}");
       if (!empty($relic['note'])) {
         Whisper::echo("  {{COLOR-SECONDARY}}" . mb_strimwidth($relic['note'], 0, 72, '…') . "{{COLOR-END}}{{nl}}");
       }

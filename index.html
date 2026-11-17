@@ -448,6 +448,7 @@ code {
 .record h4 a { color: #fff; }
 .record h4 a:hover { color: var(--color-primary); }
 .record h4 .owner { color: var(--faint); font-weight: 400; }
+.record h4 .relic { color: var(--color-primary); }
 .record .meta { color: var(--faint); font-family: var(--font-code); font-size: .75rem; }
 .record p { margin: 8px 0 0; color: var(--muted); font-size: .9rem; line-height: 1.55; }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
@@ -690,9 +691,10 @@ const reliquary = {
   },
 };
 const e = (value) => Exura.escape(value ?? '');
+// <vendor>/<repo>/<relic>: the vendor dim, the repo plain, the relic (its .rune) bright
 const named = (name) => {
-  const [owner, ...rest] = String(name).split('/');
-  return `<span class="owner">${e(owner)}/</span>${e(rest.join('/'))}`;
+  const [owner, repo, ...relic] = String(name).split('/');
+  return `<span class="owner">${e(owner)}/</span>${e(repo ?? '')}${relic.length ? `<span class="relic">/${e(relic.join('/'))}</span>` : ''}`;
 };
 
 

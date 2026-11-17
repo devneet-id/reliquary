@@ -7,7 +7,7 @@
  * Run this script using:
  *   $ php hall
  *   $ php hall sync      [--from=<owner>/<repo>] [--local]   take the runites of the parent, keep your records & page, push
- *   $ php hall analyze   [--repo=<repo>]           check this reliquary: records, names, every seal
+ *   $ php hall analyze   [--repo=<repo>/<relic>]   check this reliquary: records, names, every seal
  *   $ php hall chain     [--from=<owner>/<repo>]   the whole chain, nexus by nexus, with its relics
  *
  * Spells for tests (point them at a fake GitHub):
@@ -378,15 +378,20 @@ Chanter::cast(
     }
 
     $owner = explode('/', $main)[0];
-    $only = hall_spell('repo');
-    if ($only !== '' && strpos($only, '/') === false) {
-      $only = "$owner/$only";
+    // --repo: <repo>/<relic>, <repo> (its cast, or an older key), or a whole key
+    $only = [];
+    if (($input = trim(hall_spell('repo'), '/')) !== '') {
+      $parts = explode('/', strtolower($input));
+      if (count($parts) === 1 || $parts[0] !== strtolower($owner)) {
+        array_unshift($parts, strtolower($owner));
+      }
+      $only = count($parts) === 2 ? [implode('/', $parts) . '/cast', implode('/', $parts)] : [implode('/', $parts)];
     }
     Whisper::echo("{{nl}}{{bold}}Relics{{end}}{{nl}}");
     $seen = 0;
     foreach ($relic['list'] as $name => $item) {
       $name = (string) $name;
-      if ($only !== '' && strcasecmp($name, $only) !== 0) {
+      if ($only && !in_array(strtolower($name), $only, true)) {
         continue;
       }
       $seen++;
@@ -398,7 +403,14 @@ Chanter::cast(
         $say('fail', "$name · has no version");
         continue;
       }
-      Whisper::echo("{{COLOR-INFO}}♦{{COLOR-END}} {{bold}}$name{{end}} · " . ($item['runite'] ?? 'cast') . ".rune{{nl}}");
+      Whisper::echo("{{COLOR-INFO}}♦{{COLOR-END}} {{bold}}$name{{end}} · " . (explode('/', $name)[2] ?? $item['runite'] ?? 'cast') . ".rune{{nl}}");
+      // one relic = one .rune: <vendor>/<repo>/<relic>, lowercase (Rune looks it up in lowercase)
+      $parts = explode('/', $name);
+      if (count($parts) !== 3) {
+        $say('warn', '  an older key: move it to ' . strtolower("$name/" . ($item['runite'] ?? 'cast')) . ' (php relic register, then php relic remove)');
+      }elseif ($name !== strtolower($name)) {
+        $say('warn', '  not lowercase: Rune can not find it (php relic register, then php relic remove)');
+      }
       foreach (hall_versions($item['tags']) as $version) {
         $tag = $item['tags'][$version];
         $label = "  $version" . (!empty($tag['ref']) ? " · {$tag['ref']}" : '');
@@ -430,7 +442,7 @@ Chanter::cast(
       }
     }
     if (!$seen) {
-      hall_line('info', $only !== '' ? "$only is not registered" : 'No relic yet');
+      hall_line('info', $only ? "{$only[0]} is not registered" : 'No relic yet');
     }
 
     Whisper::echo("{{nl}}{$count['ok']} valid, {$count['warn']} warning(s), {$count['fail']} invalid{{nl}}");
@@ -486,7 +498,7 @@ Chanter::cast(
         $index++;
         $versions = hall_versions($item['tags']);
         $rune = $item['tags'][$versions[0]]['rune'] ?? null;
-        Whisper::echo($inner . ($index === $children ? '└── ' : '├── ') . "• $name {{COLOR-SUCCESS}}" . implode(', ', $versions) . "{{COLOR-END}}" . ($rune ? " {{COLOR-SECONDARY}}Rune $rune{{COLOR-END}}" : '') . "{{nl}}");
+        Whisper::echo($inner . ($index === $children ? '└── ' : '├── ') . "• $name" . (count(explode('/', $name)) !== 3 ? ' {{COLOR-WARNING}}(older key){{COLOR-END}}' : '') . " {{COLOR-SUCCESS}}" . implode(', ', $versions) . "{{COLOR-END}}" . ($rune ? " {{COLOR-SECONDARY}}Rune $rune{{COLOR-END}}" : '') . "{{nl}}");
       }
       foreach ($links as $full_name => $link) {
         $index++;

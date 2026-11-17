@@ -23,7 +23,7 @@ Every reliquary is the same repo — a registry of its own — with the same run
 
 | Record       | Kept by                                    | Holds                                              |
 | ------------ | ------------------------------------------ | -------------------------------------------------- |
-| `relic.json` | [`relic`](#relic)                          | the relics of this reliquary's owner               |
+| `relic.json` | [`relic`](#relic)                          | the relics of this reliquary's owner — one per `.rune` |
 | `nexus.json` | [`nexus`](#nexus)                          | the links to its forks — only the way to them      |
 
 ```
@@ -41,7 +41,7 @@ If you know Docker, you already know the shape of it:
 | `docker build`           | `php cast reliquary --runite-relic`                             |
 | tag · digest             | version · seal (sha256)                                         |
 | `docker push`            | push the `.rune` to its repo, then `php relic register`         |
-| `docker pull` + `run`    | `php cast reliquary --relic-runite=<vendor>/<repo>`             |
+| `docker pull` + `run`    | `php cast reliquary --relic-runite=<vendor>/<repo>/<relic>`     |
 | Docker Hub               | `devneet-id/reliquary` — and every fork, each a registry itself |
 
 * **No central registry.** `devneet-id/reliquary` is only the first reliquary; it maps its forks, it does not hold them.
@@ -94,7 +94,7 @@ Shape `src/` as you like, then seal it and push your page:
 ```bash
 php cast build
 php cast reliquary --runite-relic   # cast + src/ → cast.rune
-git add index.html cast.rune && git commit -m "feat: my page" && git push
+php cast publish                    # commit index.html & cast.rune, push
 ```
 
 Your page is yours: `hall sync` never touches `index.html` or `cast.rune`.
@@ -128,13 +128,14 @@ A reliquary is kept alive by its owner. Run its casts whenever something changes
 | Your parent changed                   | `php hall sync`        |
 | You publish a new relic               | `php relic register`   |
 | A relic has a new tag, or `main` moved | `php relic upgrade`    |
+| A relic, or one version, must go      | `php relic remove`     |
 | Someone forked your reliquary         | `php nexus update`     |
 | You want to trust a reliquary         | `php nexus inspect`    |
 | Before you push                       | `php hall analyze`     |
 | You want to see the whole federation  | `php hall chain`       |
 | Your records changed                  | `php cast build`       |
 
-Each of these casts commits and pushes what it changed — your registry is what you push. Only `php cast build` leaves `index.html` for you to commit.
+Each of these casts commits and pushes what it changed — your registry is what you push. Your page goes out with `php cast publish`.
 
 ---
 
@@ -147,8 +148,9 @@ Every command asks what it needs. Every question can also be answered with a spe
 | Command                  | Spells                                       | Description                                                                 |
 | ------------------------ | -------------------------------------------- | --------------------------------------------------------------------------- |
 | `php relic initiate`     | `--user=<username>` `--yes` `--local`        | Start a clean `relic.json` as `<username>/<project folder>` (the folder name = your repo name).                |
-| `php relic register`     | `--repo=<repo>/<runite>` `--tag=` `--note=` `--local` | Register a relic, e.g. `exuracss/cast` → `cast.rune`. No tag → `main` as `0.1.0`. Commits & pushes `relic.json`. |
-| `php relic upgrade`      | `--repo=<repo>` `--tag=` `--local`           | Add a new version. No tag → `main` as the next patch (`0.1.0` → `0.1.1`). Commits & pushes `relic.json`. |
+| `php relic register`     | `--repo=<repo>/<relic>` `--tag=` `--note=` `--local` | Register a relic: `build-vercel-app/vercel` → `vercel.rune` in `build-vercel-app`, named `<vendor>/build-vercel-app/vercel`. No `/<relic>` → `cast`. No tag → `main` as `0.1.0`. Commits & pushes `relic.json`. |
+| `php relic upgrade`      | `--repo=<repo>/<relic>` `--tag=` `--local`   | Add a new version. No tag → `main` as the next patch (`0.1.0` → `0.1.1`). Commits & pushes `relic.json`. |
+| `php relic remove`       | `--repo=<repo>/<relic>` `--tag=` `--yes` `--local` | Take one version — or, with no version, the whole relic — out of `relic.json`. Commits & pushes it. |
 
 ### nexus
 
@@ -163,7 +165,7 @@ Every command asks what it needs. Every question can also be answered with a spe
 | Command                  | Spells                                       | Description                                                                 |
 | ------------------------ | -------------------------------------------- | --------------------------------------------------------------------------- |
 | `php hall sync`          | `--from=<owner>/<repo>` `--local`            | Take the runites of the parent reliquary, keep your records & page, push.  |
-| `php hall analyze`       | `--repo=<repo>`                              | Check this reliquary: its records, its name against `git remote origin`, every seal. |
+| `php hall analyze`       | `--repo=<repo>/<relic>`                      | Check this reliquary: its records, its name against `git remote origin`, every seal. |
 | `php hall chain`         | `--from=<owner>/<repo>`                      | The whole chain from `devneet-id/reliquary`, nexus by nexus, with its relics. |
 
 ### website
@@ -174,6 +176,7 @@ Every command asks what it needs. Every question can also be answered with a spe
 | `php cast serve`         | —                                            | Serve this reliquary at `http://127.0.0.1:8000`.                            |
 | `php cast watch`         | —                                            | Rebuild `index.html` whenever `src/` changes.                               |
 | `php cast start`         | —                                            | Build, then serve & watch in their own processes.                           |
+| `php cast publish`       | —                                            | Commit your page (`index.html`, `cast.rune`) and push it — `feat: update page <date time>`. |
 | `php exura fetch`        | `--version=1.1.0` `--part=css\|js\|php\|all` | Fetch Exura into `src/exura/`.                                              |
 
 `GITHUB_TOKEN` (environment variable) is sent to the GitHub API when it is set: 60 requests/hour without it, 5,000 with it. Only `nexus update` and versions taken from `main` use the API; everything else reads raw files.
@@ -201,17 +204,24 @@ Then, in your reliquary — it is recorded and pushed at once:
 php relic register --repo=<repo>/cast --tag=1.0.0
 ```
 
+One repo can carry many relics — every `.rune` is a relic of its own. An app and the runite it brings, side by side:
+
+```bash
+php relic register --repo=build-vercel-app/cast --tag=1.0.0     # the whole app
+php relic register --repo=build-vercel-app/vercel --tag=1.0.0   # only the vercel runite
+```
+
 Anyone can now bring it back to life, in any runite (Rune 1.20+):
 
 ```bash
-php cast reliquary --relic-runite=<vendor>/<repo>
+php cast reliquary --relic-runite=<vendor>/<repo>/<relic>
 ```
 
 ---
 
 ## The Laws of the Reliquary
 
-1. **A name is its repo.** A relic is named `<owner>/<repo>`, and a reliquary only lists its owner's own repos — nobody can take another name.
+1. **A relic is a `.rune`.** It is named `<vendor>/<repo>/<relic>` — lowercase — and a reliquary only lists its owner's own repos: nobody can take another name.
 2. **A version never changes.** The same version with another seal is refused; a change is a new version.
 3. **The seal is sha256** of the `.rune` when it was listed. `nexus inspect` shows any seal that broke.
 4. **A version from `main` is pinned to its commit.** When `main` moves on, older versions stay whole.
@@ -228,7 +238,7 @@ php cast reliquary --relic-runite=<vendor>/<repo>
 {
   "main": "devneet-id/reliquary",
   "list": {
-    "devneet-id/exuracss": {
+    "devneet-id/exuracss/cast": {
       "repo": "https://github.com/devneet-id/exuracss",
       "runite": "cast",
       "note": "…",
