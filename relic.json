@@ -1,4 +1,18 @@
 {
   "main": "devneet-id/reliquary",
-  "list": {}
+  "list": {
+    "devneet-id/relic-cli/cast": {
+      "repo": "https://github.com/devneet-id/relic-cli",
+      "runite": "cast",
+      "note": "Act 0: how to cast, spells and chained casts",
+      "tags": {
+        "0.1.0": {
+          "url": "https://raw.githubusercontent.com/devneet-id/relic-cli/3bdc7697b4e5522787c2e3abd2df2bb0727bba66/cast.rune",
+          "sha256": "81f7c1498c9ab641c6862a35c562ae3639f9d245f7b4abcda96e988e28d299a1",
+          "rune": "1.20.114",
+          "ref": "main@3bdc769"
+        }
+      }
+    }
+  }
 }
