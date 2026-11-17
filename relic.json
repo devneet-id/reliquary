@@ -13,6 +13,19 @@
           "ref": "main@3bdc769"
         }
       }
+    },
+    "devneet-id/relic-web/cast": {
+      "repo": "https://github.com/devneet-id/relic-web",
+      "runite": "cast",
+      "note": "Website html, css, js & php bundled by Crafter, with vessel",
+      "tags": {
+        "0.1.0": {
+          "url": "https://raw.githubusercontent.com/devneet-id/relic-web/bd07ff2db4d13f7d66b6f29b209ccdffaebe75d7/cast.rune",
+          "sha256": "d5fb9f86fe5c0ae877c845c719e552588e3b8b6dacc363fff9dc2eb88ebb4d5c",
+          "rune": "1.20.114",
+          "ref": "main@bd07ff2"
+        }
+      }
     }
   }
 }
