@@ -27,6 +27,19 @@
         }
       }
     },
+    "devneet-id/relic-web-exura-vercel/vercel": {
+      "repo": "https://github.com/devneet-id/relic-web-exura-vercel",
+      "runite": "vercel",
+      "note": "Vercel runite: init, link, publish, env",
+      "tags": {
+        "0.1.0": {
+          "url": "https://raw.githubusercontent.com/devneet-id/relic-web-exura-vercel/db4a5f4b2ad0bf256beae758750f2d9266379b7b/vercel.rune",
+          "sha256": "4e8698ebe806d0dd30fc6e00ca9f365975ec7b04031e0a71eac2bd89db63d0d0",
+          "rune": "1.20.114",
+          "ref": "main@db4a5f4"
+        }
+      }
+    },
     "devneet-id/relic-web-exura/cast": {
       "repo": "https://github.com/devneet-id/relic-web-exura",
       "runite": "cast",
