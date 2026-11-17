@@ -1,24 +1,4 @@
 {
   "main": "devneet-id/reliquary",
-  "list": {
-    "devneet-id/build-vercel-app": {
-      "repo": "https://github.com/devneet-id/build-vercel-app",
-      "runite": "cast",
-      "note": "Build a web app with Exura and ship it on Vercel: public/index.html and an ExuraPHP API in api/index.php.",
-      "tags": {
-        "0.1.0": {
-          "url": "https://raw.githubusercontent.com/devneet-id/build-vercel-app/1ae67e31b7bf3d7670a97165b5391178d5bc7447/cast.rune",
-          "sha256": "15a841181757e3872492750f83c10638fc34caf48af561f2ceef5794ef14ac3a",
-          "rune": "1.20.114",
-          "ref": "main@1ae67e3"
-        },
-        "0.1.1": {
-          "url": "https://raw.githubusercontent.com/devneet-id/build-vercel-app/98a9086c3a6ed59b5589bfd8d7e13097066d66cf/cast.rune",
-          "sha256": "febfa8270ab39d7b2a46ef0b6e49ae2c82af55add12c4994b0b8a62023399908",
-          "rune": "1.20.114",
-          "ref": "main@98a9086"
-        }
-      }
-    }
-  }
+  "list": {}
 }
