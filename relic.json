@@ -27,6 +27,19 @@
         }
       }
     },
+    "devneet-id/relic-web-exura/exura": {
+      "repo": "https://github.com/devneet-id/relic-web-exura",
+      "runite": "exura",
+      "note": "Exura runite: install or remove the Exura series",
+      "tags": {
+        "0.1.0": {
+          "url": "https://raw.githubusercontent.com/devneet-id/relic-web-exura/74ba3fe566c6ad46f1f2233ad093e0ca801c9699/exura.rune",
+          "sha256": "f785f5a4072dfc3b5bc09206fbe8cf5979f3fca96dd6c2e423baca4883f548b4",
+          "rune": "1.20.114",
+          "ref": "main@74ba3fe"
+        }
+      }
+    },
     "devneet-id/relic-web/cast": {
       "repo": "https://github.com/devneet-id/relic-web",
       "runite": "cast",
