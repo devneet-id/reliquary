@@ -14,6 +14,19 @@
         }
       }
     },
+    "devneet-id/relic-web-exura/cast": {
+      "repo": "https://github.com/devneet-id/relic-web-exura",
+      "runite": "cast",
+      "note": "Website with Exura css, js & php",
+      "tags": {
+        "0.1.0": {
+          "url": "https://raw.githubusercontent.com/devneet-id/relic-web-exura/74ba3fe566c6ad46f1f2233ad093e0ca801c9699/cast.rune",
+          "sha256": "5d5b036fa984d7d5b87620f34a9a7652349c8a68e7fbda0b27501d50423c9f60",
+          "rune": "1.20.114",
+          "ref": "main@74ba3fe"
+        }
+      }
+    },
     "devneet-id/relic-web/cast": {
       "repo": "https://github.com/devneet-id/relic-web",
       "runite": "cast",
